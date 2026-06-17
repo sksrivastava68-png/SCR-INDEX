@@ -864,6 +864,13 @@
   <div class="stats-grid" id="statsGrid"></div>
   <div class="breakdown-card" id="deptBreakdown"></div>
   <div class="breakdown-card" id="sourceBreakdown" style="margin-top:12px"></div>
+
+  <div style="margin-top:16px; padding-top:16px; border-top:1px solid var(--border);">
+    <button class="btn-ghost" style="width:100%" onclick="exportBackup()">Export Backup</button>
+    <div style="margin-top:8px; font-size:11px; color:var(--text-dim); line-height:1.5;">
+      Saves a copy of everything in this index as one file. This data lives only in this browser on this device — back it up here periodically, e.g. into OneDrive alongside your documents.
+    </div>
+  </div>
 </div>
 
 <!-- ── FILING GUIDE PANEL ─────────────────────────────────────────────────── -->
@@ -1198,6 +1205,46 @@ function renderStats() {
       <div class="bar-track"><div class="bar-fill" style="width:${(c.n/sMax*100).toFixed(0)}%;background:var(--accent)"></div></div>
       <div class="bar-cnt">${c.n}</div>
     </div>`).join('');
+}
+
+// ── EXPORT ───────────────────────────────────────────────────────────────────
+
+async function exportBackup() {
+  if (!docs.length) { showToast('Nothing to export yet — index is empty'); return; }
+
+  const stamp = new Date().toISOString().slice(0,10);
+  const filename = `SCR-Index-Backup_${stamp}.json`;
+  const json = JSON.stringify(docs, null, 2);
+
+  const canUseShare = (() => {
+    try {
+      const f = new File([json], filename, { type: 'application/json' });
+      return !!(navigator.canShare && navigator.canShare({ files: [f] }));
+    } catch(e) { return false; }
+  })();
+
+  if (canUseShare) {
+    try {
+      const file = new File([json], filename, { type: 'application/json' });
+      await navigator.share({ files: [file], title: 'SCR Document Index Backup' });
+      return;
+    } catch (e) {
+      if (e && e.name === 'AbortError') return; // user cancelled the share sheet — not a failure
+      // otherwise fall through to the download fallback below
+    }
+  }
+
+  try {
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    showToast('Backup downloaded — check Files app or Downloads');
+  } catch (e2) {
+    showToast('Export failed: ' + (e2 && e2.message ? e2.message : 'unknown error'));
+  }
 }
 
 // ── UTILS ─────────────────────────────────────────────────────────────────────
