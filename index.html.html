@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>SCR Document Index</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #0e1621;
+    --surface: #162030;
+    --surface2: #1e2d40;
+    --border: #2a3d52;
+    --border-bright: #3a5068;
+    --gold: #c8960c;
+    --gold-dim: #8a6508;
+    --text: #d0dce8;
+    --text-dim: #6a8099;
+    --text-bright: #eef4fa;
+    --accent: #2a7abf;
+    --accent-dim: #1a4a72;
+    --green: #2e8b4e;
+    --red: #c0392b;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+    --civil: #8b6914; --mech: #1a5c7a; --elec: #5a2d8b;
+    --st: #1a7a4e; --ops: #8b2020; --per: #1a4a8b;
+    --fin: #2e6b1a; --med: #8b4a1a; --safe: #8b1a1a;
+    --ga: #4a4a8b; --rpf: #1a6b4a; --po: #6b1a6b; --legal: #4a2010;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    min-height: 100vh;
+    line-height: 1.5;
+  }
+
+  /* HEADER */
+  .app-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 54px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .app-header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gold), var(--accent));
+  }
+
+  .header-left { display: flex; align-items: center; gap: 12px; }
+  .app-logo { font-family: var(--mono); font-size: 13px; font-weight: 600; color: var(--gold); letter-spacing: 0.08em; }
+  .app-title { font-size: 14px; font-weight: 500; color: var(--text-bright); }
+  .header-sep { width: 1px; height: 20px; background: var(--border); }
+  .doc-count { font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
+  .doc-count span { color: var(--gold); font-weight: 600; }
+
+  /* TABS */
+  .tab-bar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    padding: 0 20px;
+    gap: 4px;
+    overflow-x: auto;
+  }
+
+  .tab {
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-dim);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+  /* PANELS */
+  .panel { display: none; padding: 20px; }
+  .panel.active { display: block; }
+
+  /* FORM */
+  .add-form {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  .form-section {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .form-section:last-child { border-bottom: none; }
+
+  .form-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .input-row { display: flex; gap: 10px; align-items: stretch; }
+
+  .text-input {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text-bright);
+    outline: none;
+    transition: border-color 0.15s;
+    width: 100%;
+  }
+
+  .text-input:focus { border-color: var(--accent); }
+  .text-input::placeholder { color: var(--text-dim); font-size: 12px; }
+
+  .text-input.small {
+    font-family: var(--sans);
+    font-size: 13px;
+  }
+
+  .btn-gold {
+    background: var(--gold);
+    color: #0e1000;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 18px;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.15s;
+    flex-shrink: 0;
+  }
+
+  .btn-gold:active { opacity: 0.8; }
+  .btn-gold:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .btn-green {
+    background: var(--green);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 24px;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+
+  .btn-green:active { opacity: 0.8; }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 18px;
+    font-family: var(--sans);
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  /* AI THINKING */
+  .ai-result { display: none; }
+  .ai-result.visible { display: block; }
+
+  .thinking-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    color: var(--text-dim);
+    font-size: 13px;
+  }
+
+  .dots { display: flex; gap: 4px; }
+  .dots span {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    animation: pulse 1.2s ease-in-out infinite;
+  }
+  .dots span:nth-child(2) { animation-delay: 0.2s; }
+  .dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes pulse { 0%,80%,100%{opacity:.3;transform:scale(.8)} 40%{opacity:1;transform:scale(1)} }
+
+  /* FIELD GRID */
+  .field-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 14px 18px;
+  }
+
+  .field-group { display: flex; flex-direction: column; gap: 6px; }
+  .field-group.full { grid-column: 1 / -1; }
+
+  /* TAG SELECTORS */
+  .tag-wrap { display: flex; flex-wrap: wrap; gap: 6px; padding: 4px 0; }
+
+  .dept-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    color: rgba(255,255,255,0.5);
+    user-select: none;
+    transition: all 0.12s;
+  }
+
+  .dept-tag.selected { color: white; border-color: rgba(255,255,255,0.35); }
+
+  .source-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text-dim);
+    user-select: none;
+    transition: all 0.12s;
+  }
+
+  .source-tag.selected {
+    background: var(--accent-dim);
+    border-color: var(--accent);
+    color: var(--text-bright);
+  }
+
+  /* SAVE ROW */
+  .save-row {
+    padding: 12px 18px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+
+  /* HELP BOX */
+  .help-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 18px;
+  }
+
+  .help-box-title {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+  }
+
+  .help-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .help-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .help-num {
+    font-family: var(--mono);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--gold);
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .help-text {
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+
+  /* NAMING CONVENTION BOX */
+  .convention-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+
+  .convention-label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+
+  .convention-format {
+    color: var(--gold);
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .convention-examples {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .convention-ex {
+    color: var(--text-dim);
+    font-size: 11px;
+  }
+
+  .convention-ex span { color: var(--text); }
+
+  /* SEARCH + SORT BAR */
+  .search-sort-wrap { margin-bottom: 14px; }
+
+  .search-wrap {
+    position: relative;
+    margin-bottom: 10px;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-dim);
+    font-size: 16px;
+    pointer-events: none;
+  }
+
+  .search-input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 11px 14px 11px 38px;
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--text-bright);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .search-input:focus { border-color: var(--accent); }
+  .search-input::placeholder { color: var(--text-dim); }
+
+  /* SORT ROW */
+  .sort-row {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+
+  .sort-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    flex-shrink: 0;
+  }
+
+  .sort-btn {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 5px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-dim);
+    user-select: none;
+    transition: all 0.12s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .sort-btn.active {
+    background: var(--surface2);
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  .sort-arrow { font-size: 10px; }
+
+  /* FILTER ROW */
+  .filter-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+
+  .filter-chip {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 4px 11px;
+    border-radius: 20px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-dim);
+    user-select: none;
+    transition: all 0.12s;
+  }
+
+  .filter-chip.active {
+    background: var(--accent-dim);
+    border-color: var(--accent);
+    color: var(--text-bright);
+  }
+
+  /* RESULTS INFO */
+  .results-info {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+  }
+
+  /* DOC CARDS */
+  .doc-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .doc-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    transition: border-color 0.15s;
+  }
+
+  .doc-card:hover { border-color: var(--border-bright); }
+
+  .doc-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 6px;
+  }
+
+  .doc-filename {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--gold);
+    font-weight: 500;
+    word-break: break-all;
+    flex: 1;
+  }
+
+  .doc-filed {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    flex-shrink: 0;
+  }
+
+  .doc-subject {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-bright);
+    margin-bottom: 8px;
+  }
+
+  .doc-tags {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+  }
+
+  .tag-dept {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    color: white;
+    font-weight: 500;
+  }
+
+  .tag-source {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    background: var(--accent-dim);
+    color: var(--text);
+    border: 1px solid var(--accent-dim);
+  }
+
+  .tag-date {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    background: var(--surface2);
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+  }
+
+  .doc-notes {
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--text-dim);
+    font-style: italic;
+    margin-top: 4px;
+  }
+
+  .doc-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+
+  .action-btn {
+    font-size: 12px;
+    color: var(--text-dim);
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 4px 10px;
+    cursor: pointer;
+    font-family: var(--sans);
+    transition: all 0.12s;
+  }
+
+  .action-btn.del { color: #c05050; }
+  .action-btn.del:hover { border-color: var(--red); }
+
+  /* EMPTY STATE */
+  .empty-state {
+    text-align: center;
+    padding: 50px 20px;
+    color: var(--text-dim);
+  }
+
+  .empty-icon { font-size: 36px; margin-bottom: 14px; opacity: 0.4; }
+  .empty-title { font-size: 16px; font-weight: 500; color: var(--text); margin-bottom: 8px; }
+  .empty-sub { font-size: 13px; font-weight: 300; line-height: 1.6; max-width: 280px; margin: 0 auto; }
+
+  /* STATS */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+  }
+
+  .stat-value {
+    font-family: var(--mono);
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-label { font-size: 12px; font-weight: 300; color: var(--text-dim); }
+
+  .breakdown-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  .breakdown-hdr {
+    padding: 10px 16px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .bar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .bar-row:last-child { border-bottom: none; }
+  .bar-lbl { font-family: var(--mono); font-size: 11px; color: var(--text-dim); min-width: 52px; }
+  .bar-track { flex: 1; height: 5px; background: var(--bg); border-radius: 3px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
+  .bar-cnt { font-family: var(--mono); font-size: 11px; color: var(--text-dim); min-width: 18px; text-align: right; }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--green);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 999;
+    transition: transform 0.3s ease;
+    white-space: nowrap;
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 480px) {
+    .field-grid { grid-template-columns: 1fr; }
+    .help-grid { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <div class="header-left">
+    <div class="app-logo">SCR</div>
+    <div class="header-sep"></div>
+    <div class="app-title">Document Index</div>
+  </div>
+  <div class="doc-count"><span id="totalCount">0</span> docs</div>
+</div>
+
+<div class="tab-bar">
+  <div class="tab active" onclick="switchTab('add')">+ Add</div>
+  <div class="tab" onclick="switchTab('index')">Index</div>
+  <div class="tab" onclick="switchTab('stats')">Stats</div>
+  <div class="tab" onclick="switchTab('guide')">Filing Guide</div>
+</div>
+
+<!-- ── ADD PANEL ─────────────────────────────────────────────────────────── -->
+<div class="panel active" id="panel-add">
+
+  <div class="add-form">
+    <div class="form-section">
+      <label class="form-label">Filename or document description</label>
+      <div class="input-row">
+        <input class="text-input" id="filenameInput" type="text"
+          placeholder="e.g. LCSafety_2604  or paste any description..."
+          autocomplete="off" autocorrect="off" spellcheck="false">
+        <button class="btn-gold" id="analyseBtn" onclick="analyseDoc()">Analyse →</button>
+      </div>
+    </div>
+
+    <div class="ai-result" id="aiResult">
+
+      <div class="thinking-row" id="thinkingRow">
+        <div class="dots"><span></span><span></span><span></span></div>
+        Reading document details...
+      </div>
+
+      <div id="editFields" style="display:none">
+
+        <div class="field-grid">
+          <div class="field-group full">
+            <label class="form-label">Subject description</label>
+            <input class="text-input small" id="fSubject" type="text" placeholder="What is this document about?">
+          </div>
+          <div class="field-group">
+            <label class="form-label">Document date (YYMM)</label>
+            <input class="text-input small" id="fDocDate" type="text" placeholder="e.g. 2604">
+          </div>
+          <div class="field-group">
+            <label class="form-label">Date filed</label>
+            <input class="text-input small" id="fFiled" type="text" readonly>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <label class="form-label">Departments — select all that apply</label>
+          <div class="tag-wrap" id="deptSel">
+            <div class="dept-tag" style="background:var(--civil)" data-d="CIVIL" onclick="togDept(this)">CIVIL</div>
+            <div class="dept-tag" style="background:var(--mech)" data-d="MECH" onclick="togDept(this)">MECH</div>
+            <div class="dept-tag" style="background:var(--elec)" data-d="ELEC" onclick="togDept(this)">ELEC</div>
+            <div class="dept-tag" style="background:var(--st)" data-d="S&T" onclick="togDept(this)">S&T</div>
+            <div class="dept-tag" style="background:var(--ops)" data-d="OPS" onclick="togDept(this)">OPS</div>
+            <div class="dept-tag" style="background:var(--per)" data-d="PER" onclick="togDept(this)">PER</div>
+            <div class="dept-tag" style="background:var(--fin)" data-d="FIN" onclick="togDept(this)">FIN</div>
+            <div class="dept-tag" style="background:var(--med)" data-d="MED" onclick="togDept(this)">MED</div>
+            <div class="dept-tag" style="background:var(--safe)" data-d="SAFE" onclick="togDept(this)">SAFE</div>
+            <div class="dept-tag" style="background:var(--ga)" data-d="GA" onclick="togDept(this)">GA</div>
+            <div class="dept-tag" style="background:var(--rpf)" data-d="RPF" onclick="togDept(this)">RPF</div>
+            <div class="dept-tag" style="background:var(--po)" data-d="PO" onclick="togDept(this)">PO</div>
+            <div class="dept-tag" style="background:var(--legal)" data-d="LEGAL" onclick="togDept(this)">LEGAL</div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <label class="form-label">Source <span style="font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:0.06em;">— auto-detected from filename prefix</span></label>
+          <div id="autoDetectInfo" style="display:none;font-family:var(--mono);font-size:11px;color:var(--green);margin-bottom:8px;padding:5px 8px;background:var(--green-dim,#1a3a22);border-radius:4px;"></div>
+          <div class="tag-wrap" id="sourceSel">
+            <div class="source-tag" data-s="RB" onclick="selSource(this)">RB / Ministry</div>
+            <div class="source-tag" data-s="DIV" onclick="selSource(this)">Division</div>
+            <div class="source-tag" data-s="INT" onclick="selSource(this)">Internal / HQ</div>
+            <div class="source-tag" data-s="STATE" onclick="selSource(this)">State Govt</div>
+            <div class="source-tag" data-s="MP" onclick="selSource(this)">MP / MLA</div>
+            <div class="source-tag" data-s="UNION" onclick="selSource(this)">Union / Assoc</div>
+            <div class="source-tag" data-s="EMP" onclick="selSource(this)">Employee</div>
+            <div class="source-tag" data-s="RLY" onclick="selSource(this)">Other Railway</div>
+            <div class="source-tag" data-s="GOV" onclick="selSource(this)">Other Govt</div>
+            <div class="source-tag" data-s="CONTR" onclick="selSource(this)">Contractor / Vendor</div>
+            <div class="source-tag" data-s="MISC" onclick="selSource(this)">Miscellaneous</div>
+          </div>
+        </div>
+
+        <div class="field-grid">
+          <div class="field-group full">
+            <label class="form-label">Notes (optional)</label>
+            <input class="text-input small" id="fNotes" type="text" placeholder="Any additional context...">
+          </div>
+        </div>
+
+        <div class="save-row">
+          <button class="btn-ghost" onclick="resetForm()">Clear</button>
+          <button class="btn-green" onclick="saveDoc()">Save to Index</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="help-box">
+    <div class="help-box-title">How this works</div>
+    <div class="help-grid">
+      <div class="help-item">
+        <div class="help-num">1</div>
+        <div class="help-text">Annotate document in GoodNotes — export PDF to the correct source folder in OneDrive</div>
+      </div>
+      <div class="help-item">
+        <div class="help-num">2</div>
+        <div class="help-text">Come here — type the filename or a brief description — tap Analyse</div>
+      </div>
+      <div class="help-item">
+        <div class="help-num">3</div>
+        <div class="help-text">Source and date auto-fill from the filename — pick department(s) and confirm the subject in seconds</div>
+      </div>
+      <div class="help-item">
+        <div class="help-num">4</div>
+        <div class="help-text">Saved. Find it later by any department, source, subject, or date — in any combination</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── INDEX PANEL ────────────────────────────────────────────────────────── -->
+<div class="panel" id="panel-index">
+
+  <div class="search-sort-wrap">
+
+    <div class="search-wrap">
+      <span class="search-icon">⌕</span>
+      <input class="search-input" id="searchInput" type="text"
+        placeholder="Search subject, department, source, filename..."
+        oninput="renderIndex()">
+    </div>
+
+    <div class="sort-row">
+      <span class="sort-label">Sort:</span>
+      <div class="sort-btn active" id="sort-filed" onclick="setSort('filed')">
+        Date Filed <span class="sort-arrow" id="arr-filed">↓</span>
+      </div>
+      <div class="sort-btn" id="sort-docdate" onclick="setSort('docdate')">
+        Doc Date <span class="sort-arrow" id="arr-docdate">↓</span>
+      </div>
+      <div class="sort-btn" id="sort-subject" onclick="setSort('subject')">
+        Subject <span class="sort-arrow" id="arr-subject">↓</span>
+      </div>
+      <div class="sort-btn" id="sort-source" onclick="setSort('source')">
+        Source <span class="sort-arrow" id="arr-source">↓</span>
+      </div>
+      <div class="sort-btn" id="sort-dept" onclick="setSort('dept')">
+        Dept <span class="sort-arrow" id="arr-dept">↓</span>
+      </div>
+    </div>
+
+    <div class="filter-row">
+      <div class="filter-chip active" data-f="ALL" onclick="setFilter('ALL',this)">All</div>
+      <div class="filter-chip" data-f="CIVIL" onclick="setFilter('CIVIL',this)">CIVIL</div>
+      <div class="filter-chip" data-f="MECH" onclick="setFilter('MECH',this)">MECH</div>
+      <div class="filter-chip" data-f="ELEC" onclick="setFilter('ELEC',this)">ELEC</div>
+      <div class="filter-chip" data-f="S&T" onclick="setFilter('S&T',this)">S&T</div>
+      <div class="filter-chip" data-f="OPS" onclick="setFilter('OPS',this)">OPS</div>
+      <div class="filter-chip" data-f="PER" onclick="setFilter('PER',this)">PER</div>
+      <div class="filter-chip" data-f="FIN" onclick="setFilter('FIN',this)">FIN</div>
+      <div class="filter-chip" data-f="MED" onclick="setFilter('MED',this)">MED</div>
+      <div class="filter-chip" data-f="SAFE" onclick="setFilter('SAFE',this)">SAFE</div>
+      <div class="filter-chip" data-f="GA" onclick="setFilter('GA',this)">GA</div>
+      <div class="filter-chip" data-f="RPF" onclick="setFilter('RPF',this)">RPF</div>
+      <div class="filter-chip" data-f="PO" onclick="setFilter('PO',this)">PO</div>
+      <div class="filter-chip" data-f="LEGAL" onclick="setFilter('LEGAL',this)">LEGAL</div>
+    </div>
+
+  </div>
+
+  <div class="results-info" id="resultsInfo"></div>
+  <div class="doc-list" id="docList"></div>
+
+</div>
+
+<!-- ── STATS PANEL ────────────────────────────────────────────────────────── -->
+<div class="panel" id="panel-stats">
+  <div class="stats-grid" id="statsGrid"></div>
+  <div class="breakdown-card" id="deptBreakdown"></div>
+  <div class="breakdown-card" id="sourceBreakdown" style="margin-top:12px"></div>
+</div>
+
+<!-- ── FILING GUIDE PANEL ─────────────────────────────────────────────────── -->
+<div class="panel" id="panel-guide">
+
+  <div class="convention-box">
+    <div class="convention-label">Naming Convention — Everything in ONE Flat Folder</div>
+    <div class="convention-format">Source_Subject_YYMM.pdf</div>
+    <div class="convention-examples">
+      <div class="convention-ex">✓ <span>RB_LCSafety_2604.pdf</span> — source prefix auto-detected</div>
+      <div class="convention-ex">✓ <span>RB_HAGPromotion_2210.pdf</span> — date auto-extracted</div>
+      <div class="convention-ex">✓ <span>DIV_NandedFireReport_2411.pdf</span> — just type filename, fields auto-fill</div>
+      <div class="convention-ex">✓ <span>UNION_WageRevision_2603.pdf</span> — tap department chips to tag</div>
+      <div class="convention-ex">✓ <span>STATE_LandAcquisition_2511.pdf</span> — findable from any angle</div>
+    </div>
+    <div style="margin-top:10px; padding-top:10px; border-top:1px solid rgba(200,150,12,0.2); font-size:11px; color:#8a7040; line-height:1.6;">
+      All files live in: <span style="color:var(--gold);">OneDrive / SCR Work / All Documents / YYYY /</span><br>
+      One subfolder per year only — no subject or source folders needed.
+    </div>
+  </div>
+
+  <div style="background:var(--surface); border:1px solid var(--border); border-radius:8px; overflow:hidden; margin-bottom:16px;">
+    <div style="padding:10px 16px; font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-dim); border-bottom:1px solid var(--border);">Source Codes — Used as Filename Prefix</div>
+    ${[
+      ['RB_', 'Railway Board & Ministry of Railways'],
+      ['DIV_', 'Divisional Railway Managers — all divisions'],
+      ['INT_', 'Internal SCR HQ — your own circulars'],
+      ['STATE_', 'State Government — AP, Telangana, others'],
+      ['MP_', 'MP and MLA references and letters'],
+      ['UNION_', 'Staff Unions and Associations'],
+      ['EMP_', 'Direct representations from employees'],
+      ['RLY_', 'Other Railway zones'],
+      ['GOV_', 'Other Central Government departments'],
+      ['CONTR_', 'Contractors and vendors'],
+      ['MISC_', 'Miscellaneous — does not fit above'],
+    ].map(([f,d]) => `
+      <div style="display:flex; gap:14px; padding:8px 16px; border-bottom:1px solid var(--border); font-size:13px;">
+        <div style="font-family:var(--mono); font-size:12px; color:var(--gold); min-width:72px; flex-shrink:0;">\${f}</div>
+        <div style="font-weight:300; color:var(--text-dim);">\${d}</div>
+      </div>`).join('')}
+  </div>
+
+  <div style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:16px 18px;">
+    <div style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-dim); margin-bottom:12px;">The Two-Step Rule</div>
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <div style="display:flex; gap:12px; align-items:flex-start;">
+        <div style="font-family:var(--mono); font-size:18px; font-weight:600; color:var(--gold); flex-shrink:0; line-height:1;">1</div>
+        <div style="font-size:13px; font-weight:300; color:var(--text-dim); line-height:1.6;"><strong style="color:var(--text)">File in OneDrive</strong> — choose the source folder, name it Subject_YYMM, save. Done. Takes 10 seconds.</div>
+      </div>
+      <div style="display:flex; gap:12px; align-items:flex-start;">
+        <div style="font-family:var(--mono); font-size:18px; font-weight:600; color:var(--gold); flex-shrink:0; line-height:1;">2</div>
+        <div style="font-size:13px; font-weight:300; color:var(--text-dim); line-height:1.6;"><strong style="color:var(--text)">Index here</strong> — type the filename, tap Analyse, confirm tags, save. Takes 30 seconds. Now findable from any department, source, subject, or date angle.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STORE_KEY = 'scr_idx_v4';
+const DEPT_COL = {
+  'CIVIL':'#8b6914','MECH':'#1a5c7a','ELEC':'#5a2d8b','S&T':'#1a7a4e',
+  'OPS':'#8b2020','PER':'#1a4a8b','FIN':'#2e6b1a','MED':'#8b4a1a',
+  'SAFE':'#8b1a1a','GA':'#4a4a8b','RPF':'#1a6b4a','PO':'#6b1a6b','LEGAL':'#4a2010'
+};
+
+let docs = [];
+let activeFilter = 'ALL';
+let sortKey = 'filed';
+let sortDir = -1; // -1 = desc, 1 = asc
+
+// ── STORAGE ──────────────────────────────────────────────────────────────────
+
+function load() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (raw) docs = JSON.parse(raw);
+  } catch(e) { docs = []; }
+  updateCount(); renderIndex(); renderStats();
+}
+
+function persist() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(docs)); }
+  catch(e) { console.error(e); showToast('Could not save — storage may be full'); }
+}
+
+// ── TABS ─────────────────────────────────────────────────────────────────────
+
+function switchTab(t) {
+  document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(el => el.classList.remove('active'));
+  document.querySelector(`[onclick="switchTab('${t}')"]`).classList.add('active');
+  document.getElementById('panel-' + t).classList.add('active');
+  if (t === 'index') renderIndex();
+  if (t === 'stats') renderStats();
+}
+
+// ── AI ANALYSE ───────────────────────────────────────────────────────────────
+
+async function analyseDoc() {
+  const fn = document.getElementById('filenameInput').value.trim();
+  if (!fn) return;
+
+  document.getElementById('analyseBtn').disabled = true;
+  document.getElementById('aiResult').classList.add('visible');
+  document.getElementById('thinkingRow').style.display = 'flex';
+  document.getElementById('editFields').style.display = 'none';
+
+  // Auto-detect source from filename prefix before calling AI
+  const SOURCE_CODES = ['RB','DIV','INT','STATE','MP','UNION','EMP','RLY','GOV','CONTR','MISC'];
+  let detectedSource = '';
+  const fnUpper = fn.toUpperCase().replace(/\.PDF$/i,'');
+  for (const code of SOURCE_CODES) {
+    if (fnUpper.startsWith(code + '_') || fnUpper.startsWith(code + '-')) {
+      detectedSource = code;
+      break;
+    }
+  }
+
+  // Also auto-extract YYMM from end of filename
+  const dateMatch = fnUpper.match(/_(\d{4})(?:\.PDF)?$/);
+  const detectedDate = dateMatch ? dateMatch[1] : '';
+
+  // Try to turn a filename like "DIV_NandedFireReport_2411" into a readable subject guess.
+  // This is plain string parsing (no AI / no network call) so it works fully offline.
+  let subjectGuess = fn.replace(/\.pdf$/i, '');
+  if (detectedSource) subjectGuess = subjectGuess.replace(new RegExp('^' + detectedSource + '[_-]', 'i'), '');
+  if (detectedDate) subjectGuess = subjectGuess.replace(new RegExp('[_-]' + detectedDate + '$'), '');
+  subjectGuess = subjectGuess.replace(/[_-]+/g, ' ').replace(/([a-z])([A-Z])/g, '$1 $2').trim();
+
+  document.getElementById('fSubject').value = subjectGuess;
+  document.getElementById('fDocDate').value = detectedDate || '';
+  document.getElementById('fFiled').value = new Date().toISOString().slice(0,10);
+
+  document.querySelectorAll('.dept-tag').forEach(t => t.classList.remove('selected'));
+  document.querySelectorAll('.source-tag').forEach(t => {
+    t.classList.toggle('selected', t.dataset.s === detectedSource);
+  });
+
+  // Show auto-detect indicator
+  const ind = document.getElementById('autoDetectInfo');
+  if (ind) {
+    const parts = [];
+    if (detectedSource) parts.push('Source: ' + detectedSource);
+    if (detectedDate) parts.push('Date: ' + detectedDate);
+    if (parts.length) {
+      ind.textContent = '✓ Auto-detected from filename — ' + parts.join(' · ') + ' — pick department(s) below';
+      ind.style.display = 'block';
+    } else {
+      ind.textContent = 'No source/date prefix detected — fill in manually below';
+      ind.style.display = 'block';
+    }
+  }
+
+  document.getElementById('thinkingRow').style.display = 'none';
+  document.getElementById('editFields').style.display = 'block';
+  document.getElementById('analyseBtn').disabled = false;
+}
+
+function togDept(el) { el.classList.toggle('selected'); }
+function selSource(el) {
+  document.querySelectorAll('.source-tag').forEach(t => t.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+// ── SAVE ─────────────────────────────────────────────────────────────────────
+
+async function saveDoc() {
+  const fn = document.getElementById('filenameInput').value.trim();
+  const subj = document.getElementById('fSubject').value.trim();
+  if (!fn || !subj) { showToast('Please fill filename and subject'); return; }
+
+  const depts = [...document.querySelectorAll('.dept-tag.selected')].map(t => t.dataset.d);
+  const src = document.querySelector('.source-tag.selected');
+
+  docs.unshift({
+    id: Date.now().toString(),
+    filename: fn,
+    subject: subj,
+    docDate: document.getElementById('fDocDate').value.trim(),
+    filedDate: new Date().toISOString().slice(0,10),
+    departments: depts,
+    source: src ? src.dataset.s : 'MISC',
+    notes: document.getElementById('fNotes').value.trim()
+  });
+
+  await persist();
+  updateCount();
+  showToast('Saved ✓');
+  resetForm();
+}
+
+function resetForm() {
+  ['filenameInput','fSubject','fDocDate','fNotes'].forEach(id => document.getElementById(id).value = '');
+  document.querySelectorAll('.dept-tag').forEach(t => t.classList.remove('selected'));
+  document.querySelectorAll('.source-tag').forEach(t => t.classList.remove('selected'));
+  document.getElementById('aiResult').classList.remove('visible');
+  document.getElementById('editFields').style.display = 'none';
+}
+
+// ── SORT ─────────────────────────────────────────────────────────────────────
+
+function setSort(key) {
+  if (sortKey === key) { sortDir *= -1; }
+  else { sortKey = key; sortDir = key === 'subject' || key === 'source' || key === 'dept' ? 1 : -1; }
+
+  document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sort-' + key).classList.add('active');
+
+  ['filed','docdate','subject','source','dept'].forEach(k => {
+    const el = document.getElementById('arr-' + k);
+    if (el) el.textContent = (k === key) ? (sortDir === 1 ? '↑' : '↓') : '↓';
+  });
+
+  renderIndex();
+}
+
+function sortedDocs(arr) {
+  return [...arr].sort((a, b) => {
+    let va, vb;
+    if (sortKey === 'filed')   { va = a.filedDate || ''; vb = b.filedDate || ''; }
+    if (sortKey === 'docdate') { va = a.docDate || ''; vb = b.docDate || ''; }
+    if (sortKey === 'subject') { va = (a.subject || '').toLowerCase(); vb = (b.subject || '').toLowerCase(); }
+    if (sortKey === 'source')  { va = a.source || ''; vb = b.source || ''; }
+    if (sortKey === 'dept')    { va = (a.departments || []).join(','); vb = (b.departments || []).join(','); }
+    if (va < vb) return -1 * sortDir;
+    if (va > vb) return 1 * sortDir;
+    return 0;
+  });
+}
+
+// ── FILTER & RENDER ───────────────────────────────────────────────────────────
+
+function setFilter(f, el) {
+  activeFilter = f;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderIndex();
+}
+
+function renderIndex() {
+  const q = (document.getElementById('searchInput')?.value || '').toLowerCase();
+  const list = document.getElementById('docList');
+  const info = document.getElementById('resultsInfo');
+
+  let filtered = docs.filter(d => {
+    const deptOk = activeFilter === 'ALL' || (d.departments || []).includes(activeFilter);
+    const qOk = !q ||
+      (d.filename||'').toLowerCase().includes(q) ||
+      (d.subject||'').toLowerCase().includes(q) ||
+      (d.source||'').toLowerCase().includes(q) ||
+      (d.departments||[]).some(dep => dep.toLowerCase().includes(q)) ||
+      (d.notes||'').toLowerCase().includes(q) ||
+      (d.docDate||'').includes(q);
+    return deptOk && qOk;
+  });
+
+  filtered = sortedDocs(filtered);
+  if (info) info.textContent = filtered.length + ' of ' + docs.length + ' documents';
+
+  if (filtered.length === 0) {
+    list.innerHTML = `<div class="empty-state">
+      <div class="empty-icon">📂</div>
+      <div class="empty-title">${docs.length === 0 ? 'No documents yet' : 'No results'}</div>
+      <div class="empty-sub">${docs.length === 0 ? 'Add your first document using the Add tab.' : 'Try a different search or filter.'}</div>
+    </div>`;
+    return;
+  }
+
+  list.innerHTML = filtered.map(d => `
+    <div class="doc-card">
+      <div class="doc-top">
+        <div class="doc-filename">${esc(d.filename)}</div>
+        <div class="doc-filed">${d.filedDate || ''}</div>
+      </div>
+      <div class="doc-subject">${esc(d.subject)}</div>
+      <div class="doc-tags">
+        ${(d.departments||[]).map(dep => `<span class="tag-dept" style="background:${DEPT_COL[dep]||'#444'}">${dep}</span>`).join('')}
+        <span class="tag-source">${d.source || ''}</span>
+        ${d.docDate ? `<span class="tag-date">${d.docDate}</span>` : ''}
+      </div>
+      ${d.notes ? `<div class="doc-notes">${esc(d.notes)}</div>` : ''}
+      <div class="doc-actions">
+        <button class="action-btn del" onclick="delDoc('${d.id}')">Delete</button>
+      </div>
+    </div>`).join('');
+}
+
+async function delDoc(id) {
+  docs = docs.filter(d => d.id !== id);
+  await persist(); updateCount(); renderIndex(); renderStats();
+  showToast('Removed');
+}
+
+// ── STATS ─────────────────────────────────────────────────────────────────────
+
+function renderStats() {
+  const g = document.getElementById('statsGrid');
+  const db = document.getElementById('deptBreakdown');
+  const sb = document.getElementById('sourceBreakdown');
+  if (!g) return;
+
+  const thisMonth = new Date().toISOString().slice(0,7);
+  const uniqueSrcs = [...new Set(docs.map(d => d.source))].length;
+
+  g.innerHTML = `
+    <div class="stat-card"><div class="stat-value">${docs.length}</div><div class="stat-label">Total indexed</div></div>
+    <div class="stat-card"><div class="stat-value">${uniqueSrcs}</div><div class="stat-label">Unique sources</div></div>
+    <div class="stat-card"><div class="stat-value">${[...new Set(docs.flatMap(d=>d.departments))].length}</div><div class="stat-label">Depts with docs</div></div>
+    <div class="stat-card"><div class="stat-value">${docs.filter(d=>d.filedDate&&d.filedDate.slice(0,7)===thisMonth).length}</div><div class="stat-label">This month</div></div>`;
+
+  const allDepts = ['CIVIL','MECH','ELEC','S&T','OPS','PER','FIN','MED','SAFE','GA','RPF','PO','LEGAL'];
+  const dCounts = allDepts.map(d => ({ k: d, n: docs.filter(doc => (doc.departments||[]).includes(d)).length }));
+  const dMax = Math.max(...dCounts.map(c=>c.n), 1);
+
+  db.innerHTML = `<div class="breakdown-hdr">By Department</div>` +
+    dCounts.map(c => `<div class="bar-row">
+      <div class="bar-lbl">${c.k}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${(c.n/dMax*100).toFixed(0)}%;background:${DEPT_COL[c.k]||'#444'}"></div></div>
+      <div class="bar-cnt">${c.n}</div>
+    </div>`).join('');
+
+  const srcKeys = ['RB','DIV','INT','STATE','MP','UNION','EMP','RLY','GOV','CONTR','MISC'];
+  const sCounts = srcKeys.map(s => ({ k: s, n: docs.filter(d => d.source === s).length })).filter(c=>c.n>0);
+  const sMax = Math.max(...sCounts.map(c=>c.n), 1);
+
+  sb.innerHTML = `<div class="breakdown-hdr">By Source</div>` +
+    sCounts.map(c => `<div class="bar-row">
+      <div class="bar-lbl">${c.k}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${(c.n/sMax*100).toFixed(0)}%;background:var(--accent)"></div></div>
+      <div class="bar-cnt">${c.n}</div>
+    </div>`).join('');
+}
+
+// ── UTILS ─────────────────────────────────────────────────────────────────────
+
+function updateCount() { document.getElementById('totalCount').textContent = docs.length; }
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function esc(s) {
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+load();
+</script>
+</body>
+</html>
